@@ -114,7 +114,7 @@ app.post('/api/employee', ({ body }, res) => {
 
 // Read all employees
 app.get('/api/employees', (req, res) => {
-  const sql = `SELECT a.id, a.first_name, a.last_name, b.title, c.name, CONCAT(d.first_name, ' ', d.last_name) as manager
+  const sql = `SELECT a.id, a.first_name, a.last_name, b.title, c.name as department, b.salary, CONCAT(d.first_name, ' ', d.last_name) as manager
                FROM employee a
                JOIN role b ON b.id = a.role_id
                JOIN department c ON c.id = b.department_id
