@@ -557,7 +557,7 @@ async function displayEmployeesToDelete(){
           
           deleteEmployee(employee.id)
           .then((data) => {
-            console.log(`Employee ${answers.first_name.trim()} ${answers.last_name.trim()} deleted from the database`);
+            console.log(`Employee ${answers.employee_name.trim()} deleted from the database`);
             init();
           })
           .catch((err) => console.error(err));
