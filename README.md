@@ -56,4 +56,6 @@
 
   Project Link [https://github.com/JeanPiere91/employee-tracker](https://github.com/JeanPiere91/employee-tracker)
 
+  Project Video [See more](https://drive.google.com/file/d/1y7-U6ITcABtwC5kL96kS2eVru11xsJ9W/view)
+
   If you have any questios about the repo, open an issue or contact me directly at [jeanpiere.bellota@gmail.com](jeanpiere.bellota@gmail.com). You can find more of my work at [JeanPiere91](https://github.com/JeanPiere91)
