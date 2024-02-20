@@ -132,8 +132,66 @@ app.get('/api/employees', (req, res) => {
   });
 });
 
+// Read employees by manager
+app.get('/api/employees-by-manager', (req, res) => {
+  const sql = `SELECT CONCAT(b.first_name, ' ', b.last_name) as manager, CONCAT(a.first_name, ' ', a.last_name) as employee
+                FROM employee a
+                LEFT JOIN employee b ON b.id = a.manager_id
+                WHERE a.manager_id IS NOT NULL;`;
+
+  db.query(sql, (err, rows) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+       return;
+    }
+    res.json({
+      message: 'success',
+      data: rows
+    });
+  });
+});
+
+// Read employees by department
+app.get('/api/employees-by-department', (req, res) => {
+  const sql = `SELECT c.name as department, CONCAT(a.first_name, ' ', a.last_name) as employee
+               FROM employee a
+               JOIN role b ON b.id = a.role_id
+               JOIN department c ON c.id = b.department_id;`;
+
+  db.query(sql, (err, rows) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+       return;
+    }
+    res.json({
+      message: 'success',
+      data: rows
+    });
+  });
+});
+
+// Read budget by department
+app.get('/api/budget-by-department', (req, res) => {
+  const sql = `SELECT c.name as department, SUM(b.salary) as budget
+               FROM employee a
+               JOIN role b ON b.id = a.role_id
+               JOIN department c ON c.id = b.department_id
+               GROUP BY c.name;`;
+
+  db.query(sql, (err, rows) => {
+    if (err) {
+      res.status(500).json({ error: err.message });
+       return;
+    }
+    res.json({
+      message: 'success',
+      data: rows
+    });
+  });
+});
+
 // Update employee rol
-app.put('/api/employee/:id', (req, res) => {
+app.put('/api/employee-role/:id', (req, res) => {
   const sql = `UPDATE employee SET role_id = ? WHERE id = ?`;
   const params = [req.body.role_id, req.params.id];
 
@@ -149,6 +207,94 @@ app.put('/api/employee/:id', (req, res) => {
         message: 'success',
         data: req.body,
         changes: result.affectedRows
+      });
+    }
+  });
+});
+
+// Update employee manager
+app.put('/api/employee-manager/:id', (req, res) => {
+  const sql = `UPDATE employee SET manager_id = ? WHERE id = ?`;
+  const params = [req.body.manager_id, req.params.id];
+
+  db.query(sql, params, (err, result) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+    } else if (!result.affectedRows) {
+      res.json({
+        message: 'Employee not found'
+      });
+    } else {
+      res.json({
+        message: 'success',
+        data: req.body,
+        changes: result.affectedRows
+      });
+    }
+  });
+});
+
+// Delete a department
+app.delete('/api/department/:id', (req, res) => {
+  const sql = `DELETE FROM department WHERE id = ?`;
+  const params = [req.params.id];
+  
+  db.query(sql, params, (err, result) => {
+    if (err) {
+      res.statusMessage(400).json({ error: res.message });
+    } else if (!result.affectedRows) {
+      res.json({
+      message: 'Department not found'
+      });
+    } else {
+      res.json({
+        message: 'deleted',
+        changes: result.affectedRows,
+        id: req.params.id
+      });
+    }
+  });
+});
+
+// Delete a role
+app.delete('/api/role/:id', (req, res) => {
+  const sql = `DELETE FROM role WHERE id = ?`;
+  const params = [req.params.id];
+  
+  db.query(sql, params, (err, result) => {
+    if (err) {
+      res.statusMessage(400).json({ error: res.message });
+    } else if (!result.affectedRows) {
+      res.json({
+      message: 'Role not found'
+      });
+    } else {
+      res.json({
+        message: 'deleted',
+        changes: result.affectedRows,
+        id: req.params.id
+      });
+    }
+  });
+});
+
+// Delete a employee
+app.delete('/api/employee/:id', (req, res) => {
+  const sql = `DELETE FROM employee WHERE id = ?`;
+  const params = [req.params.id];
+  
+  db.query(sql, params, (err, result) => {
+    if (err) {
+      res.statusMessage(400).json({ error: res.message });
+    } else if (!result.affectedRows) {
+      res.json({
+      message: 'Employee not found'
+      });
+    } else {
+      res.json({
+        message: 'deleted',
+        changes: result.affectedRows,
+        id: req.params.id
       });
     }
   });
