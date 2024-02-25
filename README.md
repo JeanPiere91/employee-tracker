@@ -37,7 +37,7 @@
   ```  
 
   ```properties
-  node index.js
+  npm test
   ```  
   
   ## License
